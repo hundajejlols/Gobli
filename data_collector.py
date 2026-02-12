@@ -41,7 +41,7 @@ def takeSnapshot(access_token):
     except Exception as e:
         print (F"ERROR {e}")
 
-def main():
+def save():
     myKey = get_access_token()
     if myKey:
         print("")
@@ -52,8 +52,9 @@ def main():
         with open(filename, 'w', encoding='utf-8') as f:
             json.dump(snapshot, f, indent=4)
             print("Saved as json")
+        return snapshotTime
     
 
 if __name__ == "__main__":
-    main()
+    save()
     pass
