@@ -1,0 +1,11 @@
+
+*.json
+*.csv
+*.db
+*.sqlite
+__pycache__/
+
+.env
+config.py
+secrets.py
+.DS_Store
