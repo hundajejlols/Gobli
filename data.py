@@ -1,4 +1,5 @@
 import requests, json, os
+from datetime import datetime
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
 
@@ -32,10 +33,11 @@ def takeSnapshot(access_token):
     try:
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
+            serverTime = response.headers.get('Last-Modified')
             data = response.json()
             auctions = data['auctions']
             print(f"Downloaded {len(auctions)} auctions")
-            return auctions
+            return auctions, serverTime
     except Exception as e:
         print (F"ERROR {e}")
 
@@ -45,8 +47,11 @@ if __name__ == "__main__":
     myKey = get_access_token()
     if myKey:
         print("")
-        snapshot = takeSnapshot(myKey)
-        with open('Snapshot.json', 'w', encoding='utf-8') as f:
+        snapshot, snapshotTime = takeSnapshot(myKey)
+        datetimeObj = datetime.strptime(snapshotTime, "%a, %d %b %Y %H:%M:%S GMT")
+        safeFilename = datetimeObj.strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f'{safeFilename}.json'
+        with open(filename, 'w', encoding='utf-8') as f:
             json.dump(snapshot, f, indent=4)
             print("Saved as json")
     else:
