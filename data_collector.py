@@ -43,13 +43,16 @@ def takeSnapshot(access_token):
 
 def save():
     myKey = get_access_token()
+    folder = 'archive'
+    os.makedirs(folder, exist_ok=True)
     if myKey:
         print("")
         snapshot, snapshotTime = takeSnapshot(myKey)
         datetimeObj = datetime.strptime(snapshotTime, "%a, %d %b %Y %H:%M:%S GMT")
         safeFilename = datetimeObj.strftime("%Y-%m-%d_%H-%M-%S")
         filename = f'{safeFilename}.json'
-        with open(filename, 'w', encoding='utf-8') as f:
+        filepath = os.path.join(folder, filename)
+        with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(snapshot, f, indent=4)
             print("Saved as json")
         return snapshotTime
