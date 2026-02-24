@@ -14,7 +14,6 @@ Simple automated system to track and analyze World of Warcraft market trends usi
 1. **Scraper** fetches a massive JSON file from Blizzard.
 2. **Refinery** extracts only the items we want (Watchlist) and saves them to `wow_market.db`.
 3. **Archive** moves used files to `archive/old` to keep the system fast and clean.
-4. **Visualizer** draws charts so you can see when to buy or sell.
 
 ## Quick Start
 
