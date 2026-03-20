@@ -25,6 +25,14 @@ def startup_event():
 @app.get("/")
 def read_root():
     return {"status": "API is running"}
+    
+@app.get("/login/{LOGIN}")
+def CheckLogin(login: str):
+    baza = "123"
+    if login == baza:
+        return {"Login":"ISTNIEJE"}
+    else:
+        return {"ERROR"}
 
 @app.get("/api/items")
 def get_tracked_items():
