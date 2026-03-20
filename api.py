@@ -1,7 +1,16 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 
 app = FastAPI(title="Gobli API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 DB_NAME = "wow_market.db"
 
 def get_db_connection():
@@ -29,19 +38,21 @@ def get_tracked_items():
 
 @app.get("/api/items/{item_id}/history")
 def get_item_history(item_id: int, limit: int = 50):
-    """Zwraca historie cen dla konkretnego przedmiotu."""
     conn = get_db_connection()
     try:
+        # Uzywamy GROUP BY timestamp, aby wyeliminowac duplikaty pobierane z bazy
         query = """
-            SELECT timestamp, min_price, quantity 
+            SELECT timestamp, MIN(min_price) as min_price, MAX(quantity) as quantity 
             FROM price_history 
             WHERE item_id = ? 
+            GROUP BY timestamp
             ORDER BY timestamp DESC 
             LIMIT ?
         """
         rows = conn.execute(query, (item_id, limit)).fetchall()
         
         if not rows:
+            print("No data found for the requested item.")
             raise HTTPException(status_code=404, detail="Item data not found")
             
         return {
